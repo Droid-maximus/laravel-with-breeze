@@ -17,7 +17,7 @@ class ClientsController extends Controller
         $type = request('type'); // 'company' or 'person' or all
         $clients = Client::when(in_array($type, ['company','person']), fn($q) => $q->where('type', $type))
             ->orderBy('name')
-            ->paginate(15)
+            ->paginate(10)
             ->appends(['type' => $type]); // save for paginate()
 
         return view('clients.index', compact('clients','type'));

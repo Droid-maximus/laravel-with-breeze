@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\InvoicesController;
+use Illuminate\Support\Facades\Mail;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,6 +22,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('invoices', InvoicesController::class);
 });
 
+
+
+// email test
+// Route::get('/test-mail', function () {
+//     Mail::raw('Hello from Laravel', function($m){
+//         $m->to('test@inbox.mailtrap.io')->subject('Test');
+//     });
+//     return 'Sent';
+// });
 
 
 require __DIR__.'/auth.php';
