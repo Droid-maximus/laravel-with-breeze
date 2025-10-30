@@ -21,5 +21,10 @@
                 {{ __('Email Password Reset Link') }}
             </x-primary-button>
         </div>
+
+            <div>
+            <a  style="padding:5px;" href='{{route('/')}}'>  Back to register</a>
+            </div>
+
     </form>
 </x-guest-layout>

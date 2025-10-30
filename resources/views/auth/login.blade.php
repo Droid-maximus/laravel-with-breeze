@@ -5,6 +5,8 @@
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
+
+
         <!-- Email Address -->
         <div>
             <x-input-label for="email" :value="__('Email')" />
@@ -38,6 +40,10 @@
                     {{ __('Forgot your password?') }}
                 </a>
             @endif
+
+            <div>
+            <a  style="padding:5px;" href='{{route('/')}}'>  Back to register</a>
+            </div>
 
             <x-primary-button class="ms-3">
                 {{ __('Log in') }}
