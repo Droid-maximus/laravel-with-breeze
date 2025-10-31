@@ -43,6 +43,7 @@ class ClientsController extends Controller
     public function update(UpdateClientRequest $request, Client $client)
     {
         $data = $request->validated();
+        $data['vat_no'] = $data['vat_no'] ?? '-';
         $client->update($data);
         return redirect()->route('clients.index')->with('status','Klients atjaunināts!');
     }

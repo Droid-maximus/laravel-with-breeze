@@ -23,10 +23,11 @@
     @endisset
 
     <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-      {{-- flash/errors paliek kā bija --}}
+      {{-- flash/errors --}}
       {{ $slot }}
     </main>
 
+    {{-- JS --}}
     @stack('scripts')
   </div>
 </body>

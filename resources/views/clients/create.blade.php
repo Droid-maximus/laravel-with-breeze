@@ -1,59 +1,93 @@
-<x-layouts.app title="Jauns klients">
-  <h2>Jauns klients</h2>
+<x-app-layout>
+  <x-slot name="header">
+    <div class="flex items-center justify-between">
+      <h2 class="text-xl font-semibold text-gray-900">Jauns klients</h2>
+    </div>
+  </x-slot>
 
-  <form method="post" action="{{ route('clients.store') }}" id="clientForm">
-    @csrf
-    <div class="row">
-      <div class="col">
-        <div class="group">
-          <label>Tips</label>
-          <select name="type" id="typeSelect">
+  <x-ui.card class="max-w-3xl mx-auto">
+    <form method="POST" action="{{ route('clients.store') }}" id="clientForm" class="space-y-6">
+      @csrf
+
+      {{-- Tips + Nosaukums/Vārds Uzvārds --}}
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Tips</label>
+          <select name="type" id="typeSelect"
+                  class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
             <option value="person" @selected(old('type')==='person')>Fiziska persona</option>
             <option value="company" @selected(old('type','company')==='company')>Juridiska persona</option>
           </select>
-          @error('type')<div class="muted">{{ $message }}</div>@enderror
+          @error('type')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+        </div>
+
+        <div>
+          <label id="nameLabel" class="block text-sm font-medium text-gray-700">
+            Nosaukums / Vārds Uzvārds
+          </label>
+          <input name="name" id="nameInput" value="{{ old('name') }}"
+                 placeholder="SIA Demo vai Jānis Bērziņš"
+                 class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+          @error('name')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
         </div>
       </div>
-      <div class="col">
-        <div class="group">
-          <label id="nameLabel">Nosaukums / Vārds Uzvārds</label>
-          <input name="name" id="nameInput" value="{{ old('name') }}">
-          @error('name')<div class="muted">{{ $message }}</div>@enderror
+
+      {{-- Reģ. nr. / Personas kods + PVN --}}
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <label id="regLabel" class="block text-sm font-medium text-gray-700">
+            Reģ. nr. / Personas kods
+          </label>
+          <input name="reg_no" id="regInput" value="{{ old('reg_no') }}"
+                 placeholder="4010xxxxxxx"
+                 class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+          @error('reg_no')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+        </div>
+
+        <div id="vatGroup">
+          <label class="block text-sm font-medium text-gray-700">PVN numurs</label>
+          <input name="vat_no" id="vatInput" value="{{ old('vat_no') }}"
+                 placeholder="LV12345678901"
+                 class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+          @error('vat_no')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
         </div>
       </div>
-    </div>
 
-    <div class="row">
-      <div class="col">
-        <div class="group">
-          <label id="regLabel">Reģ. nr./personas kods</label>
-          <input name="reg_no" id="regInput" value="{{ old('reg_no') }}">
-          @error('reg_no')<div class="muted">{{ $message }}</div>@enderror
+      {{-- Epasts + Tālrunis --}}
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">E-pasts</label>
+          <input name="email" value="{{ old('email') }}"
+                 placeholder="info@uznemums.lv"
+                 class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+          @error('email')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Tālrunis</label>
+          <input name="phone" value="{{ old('phone') }}"
+                 placeholder="+371 20000000"
+                 class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+          @error('phone')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
         </div>
       </div>
-      <div class="col">
-        <div class="group" id="vatGroup">
-          <label>PVN numurs</label>
-          <input name="vat_no" id="vatInput" value="{{ old('vat_no') }}">
-          @error('vat_no')<div class="muted">{{ $message }}</div>@enderror
-        </div>
+
+      {{-- Adrese --}}
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Adrese</label>
+        <textarea name="address" rows="3"
+                  class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  placeholder="Iela 1, Rīga, LV-0000">{{ old('address') }}</textarea>
+        @error('address')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
       </div>
-    </div>
 
-    <div class="row">
-      <div class="col"><div class="group"><label>E-pasts</label><input name="email" value="{{ old('email') }}"></div></div>
-      <div class="col"><div class="group"><label>Tālrunis</label><input name="phone" value="{{ old('phone') }}"></div></div>
-    </div>
+      <div class="flex items-center gap-3">
+        <x-ui.button as="button" type="submit" variant="primary">Saglabāt</x-ui.button>
+        <x-ui.button href="{{ route('clients.index') }}">Atpakaļ</x-ui.button>
+      </div>
+    </form>
+  </x-ui.card>
 
-    <div class="group">
-      <label>Adrese</label>
-      <textarea name="address">{{ old('address') }}</textarea>
-    </div>
-
-    <button class="btn btn-primary">Saglabāt</button>
-    <a class="btn" href="{{ route('clients.index') }}">Atpakaļ</a>
-  </form>
-
+  @push('scripts')
   <script>
     const typeSelect = document.getElementById('typeSelect');
     const nameLabel  = document.getElementById('nameLabel');
@@ -65,30 +99,18 @@
 
     function applyTypeUI() {
       const isCompany = typeSelect.value === 'company';
-
-      // Etiķetes un vietturis
       nameLabel.textContent = isCompany ? 'Uzņēmuma nosaukums' : 'Vārds, Uzvārds';
       nameInput.placeholder = isCompany ? 'SIA Demo' : 'Jānis Bērziņš';
       regLabel.textContent  = isCompany ? 'Reģistrācijas numurs' : 'Personas kods';
-
-      // PVN grupa redzamība un required
+      regInput.placeholder = isCompany ? '4010xxxxxxx' : '140203-21342';
       vatGroup.style.display = isCompany ? '' : 'none';
-      if (isCompany) {
-        vatInput.setAttribute('required', 'required');
-      } else {
-        vatInput.removeAttribute('required');
-        // opc. notīrīt vērtību, ja nevēlies saglabāt to personai:
-        // vatInput.value = '';
-      }
-
-      // Reģ. nr./personas kods obligāts abos (pēc taviem noteikumiem var mainīt)
-      regInput.setAttribute('required', 'required');
-      nameInput.setAttribute('required', 'required');
+      if (isCompany) { vatInput.setAttribute('required','required'); }
+      else { vatInput.removeAttribute('required'); }
+      regInput.setAttribute('required','required');
+      nameInput.setAttribute('required','required');
     }
-
-    // Palaist uzreiz (ņemta vērā old('type'))
     applyTypeUI();
-    // Reaģēt uz izmaiņām
     typeSelect.addEventListener('change', applyTypeUI);
   </script>
-</x-layouts.app>
+  @endpush
+</x-app-layout>

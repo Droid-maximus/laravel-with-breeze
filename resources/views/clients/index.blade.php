@@ -12,7 +12,7 @@
   </x-slot>
 
   <x-ui.table class="mt-4">
-    {{-- 🌟 Header daļa --}}
+    {{--  Header daļa --}}
     <thead class="bg-gray-50 sticky top-0 z-10">
       <tr>
         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600">Nosaukums</th>
@@ -24,7 +24,7 @@
       </tr>
     </thead>
 
-    {{-- 🌟 Saturs --}}
+    {{--  Saturs --}}
     <tbody class="divide-y divide-gray-200">
       @forelse ($clients as $c)
         <tr class="odd:bg-white even:bg-gray-50 hover:bg-indigo-50/40">
@@ -35,7 +35,7 @@
             </x-ui.badge>
           </td>
           <td class="px-4 py-3">{{ $c->reg_no }}</td>
-          <td class="px-4 py-3">{{ $c->vat_no }}</td>
+          <td class="px-4 py-3" >{{ $c->vat_no ?? '-'}}</td>
           <td class="px-4 py-3">{{ $c->email }}</td>
           <td class="px-4 py-3">
             <div class="flex gap-2 justify-end sm:justify-start">
