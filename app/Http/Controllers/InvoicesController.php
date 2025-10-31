@@ -32,7 +32,7 @@ class InvoicesController extends Controller
         return view('invoices.index', compact('invoices'));
     }
 
-    public function create(Client $clients)
+    public function create()
     {
         // return view('invoices.create', [
         //     'invoice' => new Invoice(),
