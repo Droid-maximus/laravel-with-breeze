@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Models\Client;
 
 class StoreInvoiceRequest extends FormRequest
 {
@@ -23,8 +24,13 @@ class StoreInvoiceRequest extends FormRequest
 
     public function rules(): array
     {
+        $isAdmin = auth()->user()?->role === 'admin';
+
         return [
-            'client_id'      => ['required','exists:clients,id'],
+            'client_id' => ['required', Rule::exists('clients','id')->when(!$isAdmin, function ($rule) {
+                $rule->where('user_id', auth()->id()); 
+                    }),
+                ],
             'number'         => ['string','max:50','unique:invoices,number'],
             'issue_date'     => ['required','date'],
             'due_date'       => ['nullable','date','after_or_equal:issue_date'],

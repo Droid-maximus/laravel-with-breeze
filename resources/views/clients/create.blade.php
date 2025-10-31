@@ -8,6 +8,21 @@
   <x-ui.card class="max-w-3xl mx-auto">
     <form method="POST" action="{{ route('clients.store') }}" id="clientForm" class="space-y-6">
       @csrf
+          
+    @can('is-admin')
+      <div class="group">
+        <label>Īpašnieks (lietotājs)</label>
+        <select name="user_id">
+          @foreach($users as $u)
+            <option value="{{ $u->id }}"
+              @selected(old('user_id', isset($client)? $client->user_id : auth()->id()) == $u->id)>
+              {{ $u->name }} ({{ $u->email }})
+            </option>
+          @endforeach
+        </select>
+        @error('user_id')<div class="muted">{{ $message }}</div>@enderror
+      </div>
+    @endcan
 
       {{-- Tips + Nosaukums/Vārds Uzvārds --}}
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">

@@ -15,9 +15,13 @@ class UpdateInvoiceRequest extends FormRequest
     public function rules(): array
     {
         $invoiceId = $this->route('invoice')->id; // resource route param
+        $isAdmin = auth()->user()?->role === 'admin';
 
         return [
-            'client_id'      => ['required','exists:clients,id'],
+            'client_id' => ['required', Rule::exists('clients','id')->when(!$isAdmin, function ($rule) {
+                $rule->where('user_id', auth()->id()); 
+                    }),
+                ],
             'number'         => ['required','string','max:50', Rule::unique('invoices','number')->ignore($invoiceId)],
             'issue_date'     => ['required','date'],
             'due_date'       => ['nullable','date','after_or_equal:issue_date'],

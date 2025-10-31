@@ -26,6 +26,7 @@ class UpdateClientRequest extends FormRequest
     public function rules(): array
     {
         $type = $this->input('type');
+        $isAdmin = auth()->user()?->role === 'admin';
 
         $rules = [
             'type'    => ['bail','required', Rule::in(['person','company'])],
@@ -36,6 +37,10 @@ class UpdateClientRequest extends FormRequest
             'vat_no'  => ['nullable','string','max:100'],
             'reg_no'  => ['nullable','string','max:100'],
         ];
+
+        $rules['user_id'] = $isAdmin
+        ? ['sometimes', 'required', Rule::exists('users','id')]
+        : ['prohibited'];
 
 
         if ($type === 'person') {

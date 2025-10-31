@@ -10,20 +10,37 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
 
+
 class InvoicesController extends Controller
 {
+
+        public function __construct()
+    {
+        $this->authorizeResource(Invoice::class, 'invoice');
+    }
+
     public function index()
     {
-        $invoices = Invoice::with('client')->orderByDesc('id')->paginate(10);
+        if (auth()->user()->role === 'admin') {
+            $invoices = Invoice::with('client')->orderByDesc('id')->paginate(15);
+        } else {
+            $invoices = Invoice::with('client')
+                ->whereHas('client', fn($q) => $q->where('user_id', auth()->id()))
+                ->orderByDesc('id')->paginate(15);
+        }
+
         return view('invoices.index', compact('invoices'));
     }
 
-    public function create()
+    public function create(Client $clients)
     {
-        return view('invoices.create', [
-            'invoice' => new Invoice(),
-            'clients' => Client::orderBy('name')->get(),
-        ]);
+        // return view('invoices.create', [
+        //     'invoice' => new Invoice(),
+        //     'clients' => Client::orderBy('name')->get(),
+        // ]);
+
+        $clients = auth()->user()->role === 'admin' ?  Client::orderBy('name')->get() : Client::where('user_id', auth()->id())->orderBy('name')->get();
+        return view('invoices.create', compact('clients'));
     }
 
     public function store(StoreInvoiceRequest $request)

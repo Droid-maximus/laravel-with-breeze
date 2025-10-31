@@ -22,7 +22,7 @@ class Invoice extends Model
         return $this->hasMany(InvoiceItem::class);
     }
 
-    // Palīgsumu pārrēķins no rindām
+    // Palīgsumu pārrēķins no rindām, (ielikt vēlāk)
     public function recalcTotals(): void
     {
         $net  = $this->items->sum('net_amount');

@@ -2,7 +2,9 @@
   <x-slot name="header">
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-semibold text-gray-900">Rēķini</h2>
+        @can('is-admin')
       <x-ui.button variant="primary" href="{{ route('invoices.create') }}">+ Jauns rēķins</x-ui.button>
+      @endcan
     </div>
   </x-slot>
 
@@ -34,12 +36,16 @@
           <td class="px-4 py-3 text-right">{{ number_format($inv->total_gross, 2, ',', ' ') }} €</td>
           <td class="px-4 py-3">
             <div class="flex gap-2 justify-end sm:justify-start">
-              <x-ui.button href="{{ route('invoices.edit',$inv) }}">Labot</x-ui.button>
+              @can('update', $inv)
+                <x-ui.button href="{{ route('invoices.edit',$inv) }}">Labot</x-ui.button>
+              @endcan
+                  @can('delete', $inv)
               <form action="{{ route('invoices.destroy',$inv) }}" method="post"
                     onsubmit="return confirm('Dzēst rēķinu?')">
                 @csrf @method('DELETE')
                 <x-ui.button as="button" type="submit" variant="danger">Dzēst</x-ui.button>
               </form>
+              @endcan
             </div>
           </td>
         </tr>

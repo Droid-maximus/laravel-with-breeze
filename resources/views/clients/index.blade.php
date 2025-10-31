@@ -3,10 +3,12 @@
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-semibold text-gray-900">Klienti</h2>
       <div class="flex gap-2">
+          @can('is-admin')
         <x-ui.button href="{{ route('clients.index') }}">Visi</x-ui.button>
         <x-ui.button href="{{ route('clients.index', ['type' => 'company']) }}">Juridiskie</x-ui.button>
         <x-ui.button href="{{ route('clients.index', ['type' => 'person']) }}">Fiziskie</x-ui.button>
         <x-ui.button variant="primary" href="{{ route('clients.create') }}">+ Jauns</x-ui.button>
+        @endcan
       </div>
     </div>
   </x-slot>
@@ -39,12 +41,17 @@
           <td class="px-4 py-3">{{ $c->email }}</td>
           <td class="px-4 py-3">
             <div class="flex gap-2 justify-end sm:justify-start">
+                  @can('update', $c)
               <x-ui.button href="{{ route('clients.edit', $c) }}">Labot</x-ui.button>
+                  @endcan
+
+              @can('delete', $c)
               <form action="{{ route('clients.destroy', $c) }}" method="POST" onsubmit="return confirm('Dzēst klientu?')">
                 @csrf
                 @method('DELETE')
                 <x-ui.button as="button" type="submit" variant="danger">Dzēst</x-ui.button>
               </form>
+                  @endcan
             </div>
           </td>
         </tr>

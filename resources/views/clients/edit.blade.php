@@ -3,9 +3,35 @@
     <h2 class="text-xl font-semibold text-gray-900">Labot klientu</h2>
   </x-slot>
 
+    @auth
+    @if(auth()->user()->client)
+      <x-nav-link :href="route('clients.edit', auth()->user()->client)" :active="request()->routeIs('clients.edit')">
+        Mans profils
+      </x-nav-link>
+    @endif
+  @endauth
+
+
+
+
   <x-ui.card class="max-w-3xl mx-auto !bg-white">
     <form method="POST" action="{{ route('clients.update', $client) }}" id="clientForm" class="space-y-6">
       @csrf @method('PUT')
+
+        @can('is-admin')
+      <div class="group">
+        <label>Īpašnieks (lietotājs)</label>
+        <select name="user_id">
+          @foreach($users as $u)
+            <option value="{{ $u->id }}"
+              @selected(old('user_id', isset($client)? $client->user_id : auth()->id()) == $u->id)>
+              {{ $u->name }} ({{ $u->email }})
+            </option>
+          @endforeach
+        </select>
+        @error('user_id')<div class="muted">{{ $message }}</div>@enderror
+      </div>
+    @endcan
 
       {{-- Tips + Nosaukums/Vārds Uzvārds --}}
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">

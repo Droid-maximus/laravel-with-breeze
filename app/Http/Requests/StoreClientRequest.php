@@ -12,6 +12,7 @@ class StoreClientRequest extends FormRequest
     public function rules(): array
     {
         $type = $this->input('type');
+        $isAdmin = auth()->user()?->role === 'admin';
 
         $rules = [
             'type'    => ['required', Rule::in(['person','company'])],
@@ -21,20 +22,23 @@ class StoreClientRequest extends FormRequest
             'address' => ['nullable','string','max:500'],
             'vat_no'  => ['nullable','string','max:100'],
             'reg_no'  => ['nullable','string','max:100'],
+
+           'user_id' => $isAdmin ? ['required', Rule::exists('users','id')] : ['prohibited'], // parasts lietotājs nedrīkst sūtīt user_id
         ];
+
 
         if ($type === 'person') {
             // personas kods obligāts + formāts 
             $rules['reg_no'] = ['required','string','max:100','regex:/^(\d{6}-\d{5}|\d{11})$/'];
             // PVN parasti nav personai → nav obligāts
-            // PS: nav input laukums create skatā
+            // PS: nav input laukums create skatā )=
             $rules['vat_no'] = ['nullable','string','max:100'];
         }
 
         if ($type === 'company') {
-            // reģ. nr. 11 cipari
+            // reģ. nr. 11 cipari 
             $rules['reg_no'] = ['required','string','max:100','regex:/^\d{11}$/'];
-            // PVN obligāts: LV + 11 cipari
+            // PVN obligāts: LV + 11 cipari 
             $rules['vat_no'] = ['required','string','max:100','regex:/^LV\d{11}$/i'];
         }
 
